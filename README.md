@@ -15,3 +15,4 @@ Il workflow GitHub Actions costruisce e tagga le immagini Docker senza fare il p
 1. Modifica il file '.github/workflows/build-all-containers.yml', aggiungendo il nome della cartella in cui caricare il Dockerfile
 2. Fai un push al branch `main`.
 3. Il workflow costruirà automaticamente i container.
+4. Nel docker-compose inserire "image: tororosso85/srv_nomefolder:latest"
