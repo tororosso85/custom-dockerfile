@@ -18,7 +18,6 @@ RUN { apt-get update && \
     cmake \
     gfortran \
     python3-dev \
-    python3-pip \
     libatlas-base-dev \
     libopenblas-dev \
     liblapack-dev \
@@ -30,10 +29,10 @@ RUN { apt-get update && \
     libopencv-dev \
     libjpeg-dev \
     zlib1g-dev \
+    libssl-dev \
     git \
     wget \
-    bzip \
-    libssl-dev && \
+    bzip && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /var/tmp/* && \
     rm -Rf /usr/share/doc && \
