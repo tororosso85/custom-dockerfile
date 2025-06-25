@@ -1,0 +1,28 @@
+name: Build All Containers
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'srv_sonarscanner/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        container: [srv_sonarscanner]  # Matrice per i container
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./${{ matrix.container }}  # Seleziona la cartella per ciascun container
+          push: false  # Non pubblichiamo
+          tags: localbuild/${{ matrix.container }}:latest  # Usa il nome del container come tag
