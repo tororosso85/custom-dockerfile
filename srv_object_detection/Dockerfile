@@ -81,7 +81,7 @@ RUN { apt-get update && \
 #Per il riconoscimento del viso
 RUN { cd /app && wget http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2 && \
 	bunzip2 *.bz2  && \
-	rm *.bz2; } > /dev/null
+	rm -f *.bz2; } > /dev/null
 
 # Installa tutte le dipendenze Python in un unico comando pip3
 RUN { pip3 install --no-cache-dir opencv-python-headless face_recognition openalpr numpy dlib; } > /dev/null
