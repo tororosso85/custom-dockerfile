@@ -1,33 +1,64 @@
-# Utilizza un'immagine base con Python e OpenCV
+# Usa una base image di Debian per ARM (compatibile con Raspberry Pi 4)
 FROM python:slim
 
+# Imposta la variabile di ambiente per non chiedere conferme durante l'installazione dei pacchetti
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Imposta PYTHONUNBUFFERED per evitare buffering dell'output
 ENV PYTHONUNBUFFERED 1
 
+#Crea le cartelle
 RUN { mkdir -p /app && mkdir -p /app/faces; } > /dev/null
 
-# Installa le dipendenze di sistema
-RUN { apt-get update -y && apt-get install -y --no-install-recommends build-essential make cmake g++ gcc libffi-dev python3-dev libboost-all-dev wget bzip2 \
-    libopenblas-dev libopencv-dev libjpeg-dev libpython3-dev libatlas-base-dev libhdf5-dev libprotobuf-dev protobuf-compiler && \
+# Aggiorna il sistema e installa le dipendenze di sistema
+RUN { apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y \
+    build-essential \
+    cmake \
+    gfortran \
+    python3-dev \
+    python3-pip \
+    libatlas-base-dev \
+    libopenblas-dev \
+    liblapack-dev \
+    libx11-dev \
+    libgtk-3-dev \
+    libboost-all-dev \
+    libcurl4-openssl-dev \
+    liblog4cpp5-dev \
+    libopencv-dev \
+    libjpeg-dev \
+    zlib1g-dev \
+    git \
+    wget \
+    bzip \
+    libssl-dev && \
 	rm -rf /var/lib/apt/lists/* && \
 	rm -rf /var/tmp/* && \
 	rm -Rf /usr/share/doc && \
 	rm -Rf /usr/share/man; } > /dev/null
 
-# Installa le librerie Python necessarie
-RUN { pip install --no-cache-dir opencv-python-headless dlib; } > /dev/null
+# Clonazione del repository OpenALPR, compila e installa
+RUN { git clone https://github.com/openalpr/openalpr.git /openalpr && \
+    cd /openalpr && \
+    make && \
+    sudo make install && \
+    cp /etc/openalpr/openalpr.conf /etc/openalpr/openalpr.conf.default; } > /dev/null
 
+#Per il riconoscimento del viso
 RUN { cd /app && wget http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2 && \
 	bunzip2 *.bz2  && \
 	rm *.bz2; } > /dev/null
 
-# Copia lo script Python nel container
-COPY object_detection.py /app/object_detection.py
+# Installa tutte le dipendenze Python in un unico comando pip3
+RUN { pip3 install --no-cache-dir opencv-python-headless face_recognition openalpr numpy dlib; } > /dev/null
 
-# Imposta la directory di lavoro
+# Crea la cartella del progetto
 WORKDIR /app
 
-# Comando per avviare lo script Python
-ENTRYPOINT ["python", "object_detection.py"]
+# Copia i file del progetto nel container
+# COPY *.py /app
+
+# Comando per eseguire il programma
+CMD ["python3", "object_detection.py"]
