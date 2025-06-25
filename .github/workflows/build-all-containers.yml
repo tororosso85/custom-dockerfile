@@ -5,6 +5,7 @@ on:
     branches:
       - main
     paths:
+      - 'srv_ffmpeg/**'
       - 'srv_sonarscanner/**'
 
 jobs:
@@ -12,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        container: [srv_sonarscanner]  # Matrice per i container
+        container: [srv_ffmpeg, srv_sonarscanner]  # Matrice per i container
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
