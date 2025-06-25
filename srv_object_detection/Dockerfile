@@ -50,7 +50,7 @@ RUN { apt-get update && \
 RUN { git clone https://github.com/openalpr/openalpr.git /openalpr && \
     cd /openalpr && \
     make && \
-    sudo make install && \
+    make install && \
     cp /etc/openalpr/openalpr.conf /etc/openalpr/openalpr.conf.default; } 
 
 #Per il riconoscimento del viso
