@@ -15,48 +15,48 @@ RUN { apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
     autoconf \
-	automake \
-	beanstalkd \ 
-	build-essential \
-	bzip2 \
-	cmake  \
-	g++ \
-	gcc \
-	gfortran \
-	git \
-	git-core \
-	libatlas-base-dev \
-	libboost-all-dev \
-	libcurl3-dev \
-	libcurl4-openssl-dev \
-	libffi-dev \
-	libgtk-3-dev \
-	libhdf5-dev \
-	libjpeg-dev \
-	libjpeg62-dev \
-	liblapack-dev \
-	libleptonica-dev  \
-	liblog4cplus-dev  \
-	liblog4cpp5-dev \
-	libopenalpr-dev \
-	libopenblas-dev \
-	libopencv-dev  \
-	libpng12-dev \
-	libprotobuf-dev \
-	libpython3-dev \
-	libssl-dev \
-	libtesseract-dev  \
-	libtiff4-dev  \
-	libtool \
-	libx11-dev \
-	make \
-	openalpr  \
-	openalpr-daemon  \
-	openalpr-utils  \
-	protobuf-compiler \
-	python3-dev \
-	wget \
-	zlib1g-dev  && \
+    automake \
+    beanstalkd \
+    build-essential \
+    bzip2 \
+    cmake \
+    g++ \
+    gcc \
+    gfortran \
+    git \
+    git-core \
+    libatlas-base-dev \
+    libboost-all-dev \
+    libcurl3-dev \
+    libcurl4-openssl-dev \
+    libffi-dev \
+    libgtk-3-dev \
+    libhdf5-dev \
+    libjpeg-dev \
+    libjpeg62-dev \
+    liblapack-dev \
+    libleptonica-dev \
+    liblog4cplus-dev \
+    liblog4cpp5-dev \
+    libopenalpr-dev \
+    libopenblas-dev \
+    libopencv-dev \
+    libpng12-dev \
+    libprotobuf-dev \
+    libpython3-dev \
+    libssl-dev \
+    libtesseract-dev \
+    libtiff4-dev \
+    libtool \
+    libx11-dev \
+    make \
+    openalpr \
+    openalpr-daemon \
+    openalpr-utils \
+    protobuf-compiler \
+    python3-dev \
+    wget \
+    zlib1g-dev && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /var/tmp/* && \
     rm -Rf /usr/share/doc && \
