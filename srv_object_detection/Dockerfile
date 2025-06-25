@@ -13,7 +13,7 @@ RUN { mkdir -p /app && mkdir -p /app/faces; } > /dev/null
 # Aggiorna il sistema e installa le dipendenze di sistema
 RUN { apt-get update && \
     apt-get upgrade -y && \
-    apt-get install -y \
+    apt-get install -y --no-install-recommends \
     build-essential \
     cmake \
     gfortran \
