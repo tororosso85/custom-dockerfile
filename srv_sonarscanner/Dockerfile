@@ -11,7 +11,7 @@ RUN { apt-get update && \
 	rm -rf /var/lib/apt/lists/* && \
 	rm -rf /var/tmp/* && \
 	rm -Rf /usr/share/doc && \
-	rm -Rf /usr/share/man; } 
+	rm -Rf /usr/share/man; } > /dev/null
 
 RUN { wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-6.2.1.4610-linux-aarch64.zip && \
 	unzip sonar-scanner*.zip && \
