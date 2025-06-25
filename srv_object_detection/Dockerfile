@@ -8,7 +8,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHONUNBUFFERED 1
 
 #Crea le cartelle
-RUN { mkdir -p /app && mkdir -p /app/faces; } > /dev/null
+RUN { mkdir -p /app /app/faces /openalpr; } > /dev/null
 
 # Aggiorna il sistema e installa le dipendenze di sistema
 RUN { apt-get update && \
@@ -16,7 +16,11 @@ RUN { apt-get update && \
     apt-get install -y --no-install-recommends \
     build-essential \
     cmake \
+    make \
+    g++ \
+    gcc \
     gfortran \
+    libffi-dev \
     python3-dev \
     libatlas-base-dev \
     libopenblas-dev \
@@ -28,8 +32,12 @@ RUN { apt-get update && \
     liblog4cpp5-dev \
     libopencv-dev \
     libjpeg-dev \
+    libpython3-dev \
     zlib1g-dev \
     libssl-dev \
+    libhdf5-dev \
+    libprotobuf-dev \
+    protobuf-compiler \
     git \
     wget \
     bzip2 && \
