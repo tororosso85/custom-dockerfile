@@ -1,29 +1,31 @@
-name: Build All Containers
+name: Docker Image CI
 
 on:
   push:
-    branches:
-      - main
-    paths:
-      - 'srv_ffmpeg/**'
-      - 'srv_sonarscanner/**'
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        container: [srv_ffmpeg, srv_sonarscanner]  # Matrice per i container
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
 
-      - name: Build Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: ./${{ matrix.container }}  # Seleziona la cartella per ciascun container
-          push: false  # Non pubblichiamo
-          tags: localbuild/${{ matrix.container }}:latest  # Usa il nome del container come tag
+    - name: Find all Dockerfiles and Build Images
+      run: |
+        # Trova tutte le cartelle che contengono un Dockerfile
+        for dockerfile in $(find . -type f -name 'Dockerfile'); do
+          # Estrai il nome della cartella
+          dir=$(dirname "$dockerfile")
+          image_name="my-image-$(basename "$dir")"  # Imposta un nome per l'immagine basato sulla cartella
+          
+          # Costruisci l'immagine
+          echo "Building image for $image_name"
+          docker build -f "$dockerfile" -t "$image_name:$(date +%s)" "$dir"
+        done
