@@ -19,7 +19,7 @@ RUN { pip install --no-cache-dir opencv-python-headless dlib; } > /dev/null
 
 RUN { wget http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2 && \
 	bunzip2 shape_predictor_68_face_landmarks.dat.bz2  && \
-	rm shape_predictor_68_face_landmarks.dat.bz2 && \
+	rm *.bz2 && \
 	mv shape_predictor_68_face_landmarks.dat /app/shape_predictor_68_face_landmarks.dat; } > /dev/null
 
 # Copia lo script Python nel container
