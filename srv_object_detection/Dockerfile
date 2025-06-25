@@ -7,7 +7,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHONUNBUFFERED 1
 
 # Installa le dipendenze di sistema
-RUN { apt-get update -y && apt-get install -y --no-install-recommends build-essential make cmake g++ gcc libffi-dev python3-dev libboost-all-dev wget bzip2 bunzip2 \
+RUN { apt-get update -y && apt-get install -y --no-install-recommends build-essential make cmake g++ gcc libffi-dev python3-dev libboost-all-dev wget bzip2 \
     libopenblas-dev libopencv-dev libjpeg-dev libpython3-dev libatlas-base-dev libhdf5-dev libprotobuf-dev protobuf-compiler && \
 	rm -rf /var/lib/apt/lists/* && \
 	rm -rf /var/tmp/* && \
