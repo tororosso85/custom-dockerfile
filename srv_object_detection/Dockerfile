@@ -6,7 +6,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 # Imposta PYTHONUNBUFFERED per evitare buffering dell'output
 ENV PYTHONUNBUFFERED 1
 
-RUN { mkdir -p /app; } > /dev/null
+RUN { mkdir -p /app && mkdir -p /app/faces; } > /dev/null
 
 # Installa le dipendenze di sistema
 RUN { apt-get update -y && apt-get install -y --no-install-recommends build-essential make cmake g++ gcc libffi-dev python3-dev libboost-all-dev wget bzip2 \
@@ -19,16 +19,12 @@ RUN { apt-get update -y && apt-get install -y --no-install-recommends build-esse
 # Installa le librerie Python necessarie
 RUN { pip install --no-cache-dir opencv-python-headless dlib; } > /dev/null
 
-RUN { wget http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2 && \
+RUN { cd /app && wget http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2 && \
 	bunzip2 *.bz2  && \
-	rm *.bz2 && \
-	mv *.dat /app/; } > /dev/null
+	rm *.bz2; } > /dev/null
 
 # Copia lo script Python nel container
 COPY object_detection.py /app/object_detection.py
-
-# Crea una directory per le immagini salvate
-RUN { mkdir /app/faces; } > /dev/null
 
 # Imposta la directory di lavoro
 WORKDIR /app
