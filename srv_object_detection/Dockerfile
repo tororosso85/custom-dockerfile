@@ -33,7 +33,7 @@ RUN { apt-get update && \
 	libgtk-3-dev \
 	libhdf5-dev \
 	libjpeg-dev \
-	libjpeg62-dev 
+	libjpeg62-dev \
 	liblapack-dev \
 	libleptonica-dev  \
 	liblog4cplus-dev  \
