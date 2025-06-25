@@ -1,62 +1,107 @@
 import cv2
-import dlib
+import numpy as np
 import os
+import threading
+import face_recognition
+from openalpr import Alpr
 from datetime import datetime
-import os
 
-# Carica l'URL del flusso MJPEG dalle variabili d'ambiente
-MJPEG_STREAM_URL = os.getenv('MJPEG_STREAM_URL', 'about:blank')
+# URL del flusso MJPEG
+url = "http://IP_DEL_TUO_RASPBERRY:PORTA/video_feed"  # Cambia con l'URL corretto del tuo MJPEG
 
-# Crea una cartella per le immagini salvate
-if not os.path.exists("faces"):
-    os.makedirs("faces")
+# Inizializza il flusso MJPEG
+cap = cv2.VideoCapture(0)
 
-# Inizializza il rilevamento dei volti con dlib
-detector = dlib.get_frontal_face_detector()
+# Inizializza OpenALPR per il rilevamento targhe
+alpr = Alpr("us", "/etc/openalpr/openalpr.conf", "/etc/openalpr/runtime_data")
 
-# Inizializza il descrittore facciale per il riconoscimento
-sp = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")  # Modello di punti di riferimento facciali
+if not alpr.is_ready():
+    print("OpenALPR non è pronto.")
+    exit()
 
-# Apri il flusso MJPEG
-cap = cv2.VideoCapture(MJPEG_STREAM_URL)
+# Creazione delle cartelle per il salvataggio delle immagini
+os.makedirs("volti", exist_ok=True)  # Cartella principale per tutti i volti
+os.makedirs("targhe", exist_ok=True)  # Cartella principale per tutte le targhe
 
-while True:
-    ret, frame = cap.read()
-    if not ret:
-        print("Errore nel recupero del frame!")
-        break
+# Database di volti conosciuti
+known_face_encodings = []
+known_face_names = []
 
-    # Converti l'immagine in scala di grigi (dlib funziona meglio su immagini in bianco e nero)
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+# Funzione per il salvataggio delle immagini
+def salva_immagine(categoria, img, nome_cartella):
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+    filename = f"{nome_cartella}/{categoria}_{timestamp}.jpg"
+    cv2.imwrite(filename, img)
+    print(f"Immagine salvata in: {filename}")
 
-    # Rileva i volti nel frame
-    faces = detector(gray)
+# Funzione per il riconoscimento volti
+def rileva_volti(frame):
+    # Converte il frame in RGB per face_recognition
+    rgb_frame = frame[:, :, ::-1]  # Converte da BGR a RGB
 
-    for face in faces:
-        # Estrai i punti di riferimento del volto
-        landmarks = sp(gray, face)
+    # Trova i volti nel frame
+    face_locations = face_recognition.face_locations(rgb_frame)
+    face_encodings = face_recognition.face_encodings(rgb_frame, face_locations)
 
-        # Crea una finestra di delimitazione attorno al volto
-        top, right, bottom, left = (face.top(), face.right(), face.bottom(), face.left())
+    for (top, right, bottom, left), face_encoding in zip(face_locations, face_encodings):
+        # Confronta il volto con quelli già conosciuti
+        matches = face_recognition.compare_faces(known_face_encodings, face_encoding)
+        name = "Sconosciuto"
 
-        # Estrai il volto dall'immagine
-        face_image = frame[top:bottom, left:right]
+        if True in matches:
+            first_match_index = matches.index(True)
+            name = known_face_names[first_match_index]
+        else:
+            # Aggiungi il volto al database di volti conosciuti
+            known_face_encodings.append(face_encoding)
+            name = f"persona_{len(known_face_encodings)}"
+            known_face_names.append(name)
 
-        # Salva il volto
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        filename = f"faces/{timestamp}.jpg"
-        cv2.imwrite(filename, face_image)
+        # Ritaglia l'immagine del volto
+        face_img = frame[top:bottom, left:right]
 
-        # Disegna un rettangolo attorno al volto
-        cv2.rectangle(frame, (left, top), (right, bottom), (0, 255, 0), 2)
+        # Salva il volto nella cartella appropriata
+        salva_immagine(name, face_img, "volti")
 
-    # Mostra il frame con i volti riconosciuti
-    cv2.imshow('MJPEG Streaming', frame)
+# Funzione per il riconoscimento targhe
+def rileva_targhe(frame):
+    results = alpr.recognize_ndarray(frame)
 
-    # Premi 'q' per uscire
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
+    for plate in results['plates']:
+        targa = plate['plate']
 
-# Rilascia la cattura e chiudi la finestra
+        # Crea la cartella per la targa, se non esiste
+        targa_folder = f"targhe/{targa}"
+        os.makedirs(targa_folder, exist_ok=True)
+
+        # Salva l'immagine della targa nella cartella corrispondente
+        salva_immagine(targa, frame, targa_folder)
+
+# Funzione per il rilevamento movimento e gestione frame
+def processa_frame(frame):
+    # Rilevamento volti
+    rileva_volti(frame)
+
+    # Rilevamento targhe
+    rileva_targhe(frame)
+
+# Funzione per la cattura dei frame MJPEG
+def cattura_flusso():
+    ret, frame1 = cap.read()
+    while True:
+        ret, frame2 = cap.read()
+        if not ret:
+            break
+
+        # Passa il frame ai thread per il processing
+        threading.Thread(target=processa_frame, args=(frame2,)).start()
+
+# Avvia il flusso di cattura in un thread separato
+flusso_thread = threading.Thread(target=cattura_flusso)
+flusso_thread.start()
+
+# Attendi la fine del thread principale
+flusso_thread.join()
+
 cap.release()
-cv2.destroyAllWindows()
+alpr.unload()
