@@ -14,45 +14,63 @@ RUN { mkdir -p /app /app/faces /openalpr; } > /dev/null
 RUN { apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
-    build-essential \
-    cmake \
-    make \
-    g++ \
-    gcc \
-    gfortran \
-    libffi-dev \
-    python3-dev \
-    libatlas-base-dev \
-    libopenblas-dev \
-    liblapack-dev \
-    libx11-dev \
-    libgtk-3-dev \
-    libboost-all-dev \
-    libcurl4-openssl-dev \
-    liblog4cpp5-dev \
-    libopencv-dev \
-    libjpeg-dev \
-    libpython3-dev \
-    zlib1g-dev \
-    libssl-dev \
-    libhdf5-dev \
-    libprotobuf-dev \
-    protobuf-compiler \
-    git \
-    openalpr openalpr-daemon openalpr-utils libopenalpr-dev \
-    wget \
-    bzip2 && \
+    autoconf \
+	automake \
+	beanstalkd \ 
+	build-essential \
+	bzip2 \
+	cmake  \
+	g++ \
+	gcc \
+	gfortran \
+	git \
+	git-core \
+	libatlas-base-dev \
+	libboost-all-dev \
+	libcurl3-dev \
+	libcurl4-openssl-dev \
+	libffi-dev \
+	libgtk-3-dev \
+	libhdf5-dev \
+	libjpeg-dev \
+	libjpeg62-dev 
+	liblapack-dev \
+	libleptonica-dev  \
+	liblog4cplus-dev  \
+	liblog4cpp5-dev \
+	libopenalpr-dev \
+	libopenblas-dev \
+	libopencv-dev  \
+	libpng12-dev \
+	libprotobuf-dev \
+	libpython3-dev \
+	libssl-dev \
+	libtesseract-dev  \
+	libtiff4-dev  \
+	libtool \
+	libx11-dev \
+	make \
+	openalpr  \
+	openalpr-daemon  \
+	openalpr-utils  \
+	protobuf-compiler \
+	python3-dev \
+	wget \
+	zlib1g-dev  && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /var/tmp/* && \
     rm -Rf /usr/share/doc && \
     rm -Rf /usr/share/man; } > /dev/null
 
 # Clonazione del repository OpenALPR, compila e installa
-#RUN { git clone https://github.com/openalpr/openalpr.git /openalpr && \
-#    cd /openalpr && \
-#    make && \
-#    make install && \
-#    cp /etc/openalpr/openalpr.conf /etc/openalpr/openalpr.conf.default; } 
+RUN { git clone https://github.com/openalpr/openalpr.git /openalpr && \
+    cd /openalpr/src && \
+    mkdir build && \
+    cd build && \
+    cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_SYSCONFDIR:PATH=/etc .. && \
+    make && \
+    make install && \
+    cp /etc/openalpr/openalpr.conf /etc/openalpr/openalpr.conf.default; } 
 
 #Per il riconoscimento del viso
 RUN { cd /app && wget http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2 && \
