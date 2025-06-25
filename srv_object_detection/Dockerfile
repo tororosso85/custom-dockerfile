@@ -69,14 +69,14 @@ RUN { apt-get update && \
 #    cp /usr/local/etc/tesseract/tesseract.conf /usr/etc/tesseract.conf; }
 
 # Clonazione del repository OpenALPR, compila e installa
-RUN { git clone https://github.com/openalpr/openalpr.git /openalpr && \
-    cd /openalpr/src && \
-    mkdir build && \
-    cd build && \
-    cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_SYSCONFDIR:PATH=/etc .. && \
-    make && \
-    make install && \
-    cp /etc/openalpr/openalpr.conf /etc/openalpr/openalpr.conf.default; }
+#RUN { git clone https://github.com/openalpr/openalpr.git /openalpr && \
+#    cd /openalpr/src && \
+#    mkdir build && \
+#    cd build && \
+#    cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_SYSCONFDIR:PATH=/etc .. && \
+#    make && \
+#    make install && \
+#    cp /etc/openalpr/openalpr.conf /etc/openalpr/openalpr.conf.default; }
 
 #Per il riconoscimento del viso
 RUN { cd /app && wget http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2 && \
