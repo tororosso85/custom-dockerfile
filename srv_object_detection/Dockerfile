@@ -36,7 +36,7 @@ RUN { apt-get update && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /var/tmp/* && \
     rm -Rf /usr/share/doc && \
-    rm -Rf /usr/share/man; } > /dev/null
+    rm -Rf /usr/share/man; }
 
 # Clonazione del repository OpenALPR, compila e installa
 RUN { git clone https://github.com/openalpr/openalpr.git /openalpr && \
