@@ -51,7 +51,7 @@ RUN { git clone https://github.com/openalpr/openalpr.git /openalpr && \
     cd /openalpr && \
     make && \
     sudo make install && \
-    cp /etc/openalpr/openalpr.conf /etc/openalpr/openalpr.conf.default; } > /dev/null
+    cp /etc/openalpr/openalpr.conf /etc/openalpr/openalpr.conf.default; } 
 
 #Per il riconoscimento del viso
 RUN { cd /app && wget http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2 && \
