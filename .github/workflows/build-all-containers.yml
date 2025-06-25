@@ -28,4 +28,4 @@ jobs:
           context: ./${{ matrix.container }}  # Seleziona la cartella per ciascun container
           push: false  # Non pubblichiamo
           tags: localbuild/${{ matrix.container }}:latest  # Usa il nome del container come tag
-          platform: linux/amd64,linux/arm64  # Aggiungi entrambe le piattaforme
+          platforms: linux/amd64,linux/arm64  # Aggiungi entrambe le piattaforme
