@@ -38,7 +38,6 @@ RUN { apt-get update && \
     libleptonica-dev \
     liblog4cplus-dev \
     liblog4cpp5-dev \
-    libopenalpr-dev \
     libopenblas-dev \
     libopencv-dev \
     libpng12-dev \
@@ -50,9 +49,6 @@ RUN { apt-get update && \
     libtool \
     libx11-dev \
     make \
-    openalpr \
-    openalpr-daemon \
-    openalpr-utils \
     protobuf-compiler \
     python3-dev \
     wget \
