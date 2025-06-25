@@ -33,19 +33,17 @@ RUN { apt-get update && \
     libgtk-3-dev \
     libhdf5-dev \
     libjpeg-dev \
-    libjpeg62-dev \
     liblapack-dev \
     libleptonica-dev \
     liblog4cplus-dev \
     liblog4cpp5-dev \
     libopenblas-dev \
     libopencv-dev \
-    libpng12-dev \
     libprotobuf-dev \
     libpython3-dev \
     libssl-dev \
     libtesseract-dev \
-    libtiff4-dev \
+    libtiff-dev \
     libtool \
     libx11-dev \
     make \
