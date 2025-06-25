@@ -32,11 +32,11 @@ RUN { apt-get update && \
     libssl-dev \
     git \
     wget \
-    bzip && \
+    bzip2 && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /var/tmp/* && \
     rm -Rf /usr/share/doc && \
-    rm -Rf /usr/share/man; }
+    rm -Rf /usr/share/man; } > /dev/null
 
 # Clonazione del repository OpenALPR, compila e installa
 RUN { git clone https://github.com/openalpr/openalpr.git /openalpr && \
