@@ -5,12 +5,15 @@ import threading
 import face_recognition
 from openalpr import Alpr
 from datetime import datetime
+import dlib
 
-# URL del flusso MJPEG
-url = "http://IP_DEL_TUO_RASPBERRY:PORTA/video_feed"  # Cambia con l'URL corretto del tuo MJPEG
+# Carica l'URL del flusso MJPEG dalle variabili d'ambiente
+MJPEG_STREAM_URL = os.getenv('MJPEG_STREAM_URL', 'about:blank')
 
-# Inizializza il flusso MJPEG
-cap = cv2.VideoCapture(0)
+if MJPEG_STREAM_URL == 'about:blank':
+    print("Attenzione: MJPEG_STREAM_URL non è stato impostato correttamente, utilizzando il valore di default.")
+else:
+    print(f"URL del flusso MJPEG: {MJPEG_STREAM_URL}")
 
 # Inizializza OpenALPR per il rilevamento targhe
 alpr = Alpr("us", "/etc/openalpr/openalpr.conf", "/etc/openalpr/runtime_data")
@@ -19,9 +22,16 @@ if not alpr.is_ready():
     print("OpenALPR non è pronto.")
     exit()
 
-# Creazione delle cartelle per il salvataggio delle immagini
+# Inizializza il rilevamento dei volti con dlib
+detector = dlib.get_frontal_face_detector()
+
+# Inizializza il descrittore facciale per il riconoscimento
+sp = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")  # Modello di punti di riferimento facciali
+
+# Crea le cartelle per il salvataggio delle immagini
 os.makedirs("volti", exist_ok=True)  # Cartella principale per tutti i volti
 os.makedirs("targhe", exist_ok=True)  # Cartella principale per tutte le targhe
+os.makedirs("faces", exist_ok=True)  # Cartella per volti
 
 # Database di volti conosciuti
 known_face_encodings = []
@@ -87,14 +97,19 @@ def processa_frame(frame):
 
 # Funzione per la cattura dei frame MJPEG
 def cattura_flusso():
-    ret, frame1 = cap.read()
+    cap = cv2.VideoCapture(MJPEG_STREAM_URL)
+
+    if not cap.isOpened():
+        print(f"Impossibile aprire il flusso MJPEG da: {MJPEG_STREAM_URL}")
+        return
+
     while True:
-        ret, frame2 = cap.read()
+        ret, frame = cap.read()
         if not ret:
             break
 
         # Passa il frame ai thread per il processing
-        threading.Thread(target=processa_frame, args=(frame2,)).start()
+        threading.Thread(target=processa_frame, args=(frame,)).start()
 
 # Avvia il flusso di cattura in un thread separato
 flusso_thread = threading.Thread(target=cattura_flusso)
@@ -105,3 +120,4 @@ flusso_thread.join()
 
 cap.release()
 alpr.unload()
+cv2.destroyAllWindows()
