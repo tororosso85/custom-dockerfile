@@ -13,7 +13,7 @@ RUN { mkdir -p /app /app/faces /openalpr; } > /dev/null
 # Aggiorna il sistema e installa le dipendenze di sistema
 RUN { apt-get update && \
     apt-get upgrade -y && \
-    apt-get install -y --no-install-recommends \
+    apt-get install -y \
     autoconf \
     automake \
     beanstalkd \
@@ -49,7 +49,7 @@ RUN { apt-get update && \
     make \
     protobuf-compiler \
     python3-dev \
-    tesseract* \
+    tesseract-ocr \
     wget \
     zlib1g-dev && \
     rm -rf /var/lib/apt/lists/* && \
