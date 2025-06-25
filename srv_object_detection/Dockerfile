@@ -58,15 +58,15 @@ RUN { apt-get update && \
     rm -Rf /usr/share/man; }  > /dev/null
 
 # Installa Tesseract manualmente
-#RUN { git clone https://github.com/tesseract-ocr/tesseract.git /tesseract && \
-#    cd /tesseract && \
-#    git checkout 5.3.0 && \
-#    ./autogen.sh && \
-#    ./configure --prefix=/usr --with-extra-includes=/usr/include --with-extra-libraries=/usr/lib && \
-#    make && \
-#    make install && \
-#    ldconfig && \
-#    cp /usr/local/etc/tesseract/tesseract.conf /usr/etc/tesseract.conf; } > /dev/null
+RUN { git clone https://github.com/tesseract-ocr/tesseract.git /tesseract && \
+    cd /tesseract && \
+    git checkout 5.3.0 && \
+    ./autogen.sh && \
+    ./configure --prefix=/usr --with-extra-includes=/usr/include --with-extra-libraries=/usr/lib && \
+    make && \
+    make install && \
+    ldconfig && \
+    cp /usr/local/etc/tesseract/tesseract.conf /usr/etc/tesseract.conf; } > /dev/null
 
 # Clonazione del repository OpenALPR, compila e installa
 RUN { git clone https://github.com/openalpr/openalpr.git /openalpr && \
