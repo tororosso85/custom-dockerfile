@@ -18,9 +18,9 @@ RUN { apt-get update -y && apt-get install -y --no-install-recommends build-esse
 RUN { pip install --no-cache-dir opencv-python-headless dlib; } > /dev/null
 
 RUN { wget http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2 && \
-	bunzip2 shape_predictor_68_face_landmarks.dat.bz2  && \
+	bunzip2 *.bz2  && \
 	rm *.bz2 && \
-	mv shape_predictor_68_face_landmarks.dat /app/shape_predictor_68_face_landmarks.dat; } > /dev/null
+	mv *.dat /app/; } > /dev/null
 
 # Copia lo script Python nel container
 COPY object_detection.py /app/object_detection.py
