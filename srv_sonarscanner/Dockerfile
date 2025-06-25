@@ -3,6 +3,7 @@ FROM debian:stable-slim
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN { apt-get update && \
+        apt-get upgrade -y && \
 	apt-get install -y --no-install-recommends wget zip unzip nodejs npm && \
 	apt-get clean all && \
 	apt-get autoclean && \
